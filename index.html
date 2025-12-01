@@ -13,24 +13,25 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a4d2e 0%, #0f2617 100%);
+            background: linear-gradient(135deg, #A3D78A 0%, #7ab861 100%);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Georgia', serif;
+            font-family: 'Arial', sans-serif;
             overflow: hidden;
-            position: relative;
+            perspective: 1500px;
         }
 
-        /* Hóesés háttér */
+        /* Hóesés */
         .snowflake {
             position: absolute;
             top: -10px;
             color: white;
             font-size: 1.5em;
-            opacity: 0.8;
+            opacity: 0.6;
             animation: fall linear infinite;
             pointer-events: none;
+            z-index: 1;
         }
 
         @keyframes fall {
@@ -39,72 +40,149 @@
             }
         }
 
-        /* Ajándék doboz */
-        .gift-container {
+        /* Ajándék konténer */
+        .gift-scene {
             position: relative;
+            width: 200px;
+            height: 200px;
+            transform-style: preserve-3d;
             cursor: pointer;
-            transition: transform 0.3s ease;
-            animation: float 3s ease-in-out infinite;
+            z-index: 10;
         }
 
-        .gift-container:hover {
-            transform: scale(1.1) translateY(-10px);
+        .gift-scene.floating {
+            animation: floatGift 3s ease-in-out infinite;
         }
 
-        @keyframes float {
+        @keyframes floatGift {
             0%, 100% {
-                transform: translateY(0px);
+                transform: translateY(0) rotateY(0deg);
             }
             50% {
-                transform: translateY(-20px);
+                transform: translateY(-20px) rotateY(10deg);
             }
         }
 
+        /* Fake árnyék az ajándék alatt */
+        .gift-shadow {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 20px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(8px);
+            animation: shadowFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes shadowFloat {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateX(-50%) scale(0.8);
+                opacity: 0.2;
+            }
+        }
+
+        .gift-scene.opening .gift-shadow {
+            animation: shadowDisappear 1s ease-in-out 0.8s forwards;
+        }
+
+        @keyframes shadowDisappear {
+            0% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Ajándék doboz */
         .gift-box {
+            position: relative;
             width: 150px;
             height: 150px;
-            background: linear-gradient(135deg, #e63946 0%, #d62828 100%);
-            border-radius: 10px;
-            position: relative;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            margin: 25px;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
-        .gift-ribbon {
+        .box-base {
             position: absolute;
-            background: #ffd700;
+            width: 150px;
+            height: 120px;
+            background: linear-gradient(145deg, #FF5555, #e63946);
+            border-radius: 4px;
+            bottom: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .ribbon-vertical {
+        .box-base::before {
+            content: '';
+            position: absolute;
             width: 20px;
             height: 100%;
+            background: #FF937E;
             left: 50%;
             transform: translateX(-50%);
         }
 
-        .ribbon-horizontal {
+        .box-base::after {
+            content: '';
+            position: absolute;
             width: 100%;
             height: 20px;
+            background: #FF937E;
             top: 50%;
             transform: translateY(-50%);
         }
 
-        .bow {
+        .box-lid {
             position: absolute;
-            top: -30px;
+            width: 160px;
+            height: 40px;
+            background: linear-gradient(145deg, #FF5555, #d63946);
+            border-radius: 4px;
+            top: -5px;
+            left: -5px;
+            transform-origin: bottom;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .box-lid::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 100%;
+            background: #FF937E;
             left: 50%;
             transform: translateX(-50%);
-            width: 60px;
-            height: 60px;
+        }
+
+        .bow {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            transition: all 0.8s ease;
         }
 
         .bow::before,
         .bow::after {
             content: '';
             position: absolute;
-            width: 30px;
-            height: 40px;
-            background: #ffd700;
+            width: 25px;
+            height: 35px;
+            background: #FF937E;
             border-radius: 50% 50% 0 50%;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
         }
 
         .bow::before {
@@ -117,86 +195,306 @@
             transform: rotate(45deg) scaleX(-1);
         }
 
-        /* Fény effekt */
+        /* Animált állapotok */
+        .gift-scene.opening .box-lid {
+            transform: rotateX(-120deg);
+            opacity: 0;
+        }
+
+        .gift-scene.opening .bow {
+            transform: translateX(-50%) translateY(-100px) scale(0);
+            opacity: 0;
+        }
+
+        .gift-scene.opening .box-base {
+            animation: boxSlideAway 1s ease-in-out 0.8s forwards;
+        }
+
+        @keyframes boxSlideAway {
+            0% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-150vw) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        /* Fény robbanás */
         .light-burst {
-            position: fixed;
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 0;
             height: 0;
-            background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 215, 0, 0.8) 30%, rgba(255, 215, 0, 0) 70%);
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(193,229,159,0.4) 50%, transparent 70%);
             border-radius: 50%;
             opacity: 0;
             pointer-events: none;
-            z-index: 100;
         }
 
         .light-burst.active {
-            animation: burst 1.5s ease-out forwards;
+            animation: burstLight 1.2s ease-out forwards;
         }
 
-        @keyframes burst {
+        @keyframes burstLight {
             0% {
                 width: 0;
                 height: 0;
-                opacity: 1;
+                opacity: 0;
             }
             50% {
-                width: 2000px;
-                height: 2000px;
-                opacity: 0.8;
+                width: 400px;
+                height: 400px;
+                opacity: 1;
             }
             100% {
-                width: 2500px;
-                height: 2500px;
+                width: 600px;
+                height: 600px;
                 opacity: 0;
             }
         }
 
-        /* Karácsonyi üzenet */
-        .message {
-            position: fixed;
+        /* Részecskék */
+        .particles {
+            position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 60px 80px;
-            border-radius: 20px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
-            text-align: center;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
             opacity: 0;
-            z-index: 200;
-            max-width: 90%;
         }
 
-        .message.show {
-            animation: showMessage 1s ease-out 0.8s forwards;
+        .particles.active .particle {
+            animation: particleExplode 1.5s ease-out forwards;
         }
 
-        @keyframes showMessage {
-            to {
+        @keyframes particleExplode {
+            0% {
+                transform: translate(0, 0) scale(1);
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
             }
         }
 
-        .message h1 {
-            color: #c9184a;
-            font-size: 3em;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        /* Konfetti esés */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            overflow: hidden;
         }
 
-        .message p {
-            color: #2d6a4f;
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            opacity: 0;
+        }
+
+        .confetti.active {
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0.8;
+            }
+        }
+
+        .confetti.square {
+            border-radius: 0;
+        }
+
+        .confetti.circle {
+            border-radius: 50%;
+        }
+
+        .confetti.triangle {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 10px solid;
+        }
+
+        /* 3D Szöveg */
+        .message-3d {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(0) scale(0);
+            transform-style: preserve-3d;
+            opacity: 0;
+            z-index: 100;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .message-3d.show {
+            animation: float3DText 1s ease-out 1.5s forwards, floating3D 4s ease-in-out 2.5s infinite;
+        }
+
+        /* Fake árnyék a szöveg alatt */
+        .text-shadow {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 30px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(15px);
+            animation: textShadowFloat 4s ease-in-out 2.5s infinite;
+        }
+
+        @keyframes textShadowFloat {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.4;
+            }
+            25%, 75% {
+                transform: translateX(-50%) scale(0.9);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateX(-50%) scale(1.1);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes float3DText {
+            0% {
+                transform: translate(-50%, -50%) translateZ(-200px) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) translateZ(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes floating3D {
+            0%, 100% {
+                transform: translate(-50%, -50%) translateZ(0) rotateX(0deg) rotateY(0deg);
+            }
+            25% {
+                transform: translate(-50%, -48%) translateZ(20px) rotateX(5deg) rotateY(-5deg);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateZ(0) rotateX(0deg) rotateY(5deg);
+            }
+            75% {
+                transform: translate(-50%, -52%) translateZ(20px) rotateX(-5deg) rotateY(0deg);
+            }
+        }
+
+        .text-3d {
+            font-size: 4em;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-shadow: 
+                0 1px 0 #ccc,
+                0 2px 0 #c9c9c9,
+                0 3px 0 #bbb,
+                0 4px 0 #b9b9b9,
+                0 5px 0 #aaa,
+                0 6px 1px rgba(0,0,0,.1),
+                0 0 5px rgba(0,0,0,.1),
+                0 1px 3px rgba(0,0,0,.3),
+                0 3px 5px rgba(0,0,0,.2),
+                0 5px 10px rgba(0,0,0,.25),
+                0 10px 20px rgba(0,0,0,.2),
+                0 20px 30px rgba(0,0,0,.15);
+            margin: 0;
+            padding: 20px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(193,229,159,0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(193,229,159,0.8));
+            }
+        }
+
+        .subtitle-3d {
             font-size: 1.5em;
-            line-height: 1.6;
-            margin: 10px 0;
+            color: #FF937E;
+            margin-top: 20px;
+            font-weight: 600;
+            text-shadow: 
+                0 1px 0 #999,
+                0 2px 0 #888,
+                0 3px 0 #777,
+                0 4px 5px rgba(0,0,0,0.2);
         }
 
-        .hidden {
-            display: none;
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .text-3d {
+                font-size: 2.5em;
+            }
+
+            .subtitle-3d {
+                font-size: 1.2em;
+            }
+
+            .gift-scene {
+                width: 150px;
+                height: 150px;
+            }
+
+            .gift-shadow {
+                width: 110px;
+            }
+
+            .text-shadow {
+                width: 200px;
+            }
+
+            .gift-box {
+                width: 120px;
+                height: 120px;
+            }
+
+            .box-base {
+                width: 120px;
+                height: 95px;
+            }
+
+            .box-lid {
+                width: 130px;
+                height: 35px;
+            }
         }
     </style>
 </head>
@@ -204,30 +502,33 @@
     <!-- Hópelyhek -->
     <div id="snowflakes"></div>
 
+    <!-- Konfetti konténer -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
     <!-- Ajándék -->
-    <div class="gift-container" id="gift">
-        <div class="bow"></div>
-        <div class="gift-box">
-            <div class="gift-ribbon ribbon-vertical"></div>
-            <div class="gift-ribbon ribbon-horizontal"></div>
+    <div class="gift-scene floating" id="giftScene">
+        <div class="gift-shadow"></div>
+        <div class="gift-box" id="giftBox">
+            <div class="box-lid">
+                <div class="bow"></div>
+            </div>
+            <div class="box-base"></div>
         </div>
+        <div class="light-burst" id="lightBurst"></div>
+        <div class="particles" id="particles"></div>
     </div>
 
-    <!-- Fény effekt -->
-    <div class="light-burst" id="lightBurst"></div>
-
-    <!-- Karácsonyi üzenet -->
-    <div class="message" id="message">
-        <h1>🎄 Boldog Karácsonyt! 🎄</h1>
-        <p>Kívánok Neked békés ünnepeket,</p>
-        <p>családi harmóniát és sok-sok örömet!</p>
-        <p>✨ Legyen tele szeretettel ez a különleges időszak! ✨</p>
+    <!-- 3D Szöveg -->
+    <div class="message-3d" id="message3d">
+        <div class="text-shadow"></div>
+        <h1 class="text-3d">Boldog Karácsonyt!</h1>
+        <p class="subtitle-3d">🎄 Békés Ünnepeket 🎄</p>
     </div>
 
     <script>
-        // Hóesés létrehozása
+        // Hóesés
         function createSnowflakes() {
-            const snowflakesContainer = document.getElementById('snowflakes');
+            const container = document.getElementById('snowflakes');
             for (let i = 0; i < 50; i++) {
                 const snowflake = document.createElement('div');
                 snowflake.classList.add('snowflake');
@@ -236,35 +537,115 @@
                 snowflake.style.animationDuration = (Math.random() * 3 + 2) + 's';
                 snowflake.style.animationDelay = Math.random() * 5 + 's';
                 snowflake.style.fontSize = (Math.random() * 1 + 0.5) + 'em';
-                snowflakesContainer.appendChild(snowflake);
+                container.appendChild(snowflake);
             }
         }
 
-        // Ajándék kattintás kezelése
-        document.getElementById('gift').addEventListener('click', function() {
-            const gift = document.getElementById('gift');
+        // Részecskék létrehozása
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['#FF937E', '#FF5555', '#C1E59F', '#A3D78A'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                const angle = (Math.PI * 2 * i) / 30;
+                const distance = 100 + Math.random() * 100;
+                const tx = Math.cos(angle) * distance + 'px';
+                const ty = Math.sin(angle) * distance + 'px';
+                
+                particle.style.setProperty('--tx', tx);
+                particle.style.setProperty('--ty', ty);
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Konfetti esés
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            const colors = ['#FF5555', '#FF937E', '#C1E59F', '#A3D78A'];
+            const shapes = ['square', 'circle', 'triangle'];
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                // Véletlenszerű forma
+                const shape = shapes[Math.floor(Math.random() * shapes.length)];
+                confetti.classList.add(shape);
+                
+                // Szín
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                if (shape === 'triangle') {
+                    confetti.style.borderBottomColor = color;
+                } else {
+                    confetti.style.backgroundColor = color;
+                }
+                
+                // Pozíció és timing
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animationDelay = (Math.random() * 2) + 's';
+                
+                // Méret
+                const size = Math.random() * 8 + 6;
+                if (shape !== 'triangle') {
+                    confetti.style.width = size + 'px';
+                    confetti.style.height = size + 'px';
+                }
+                
+                container.appendChild(confetti);
+            }
+        }
+
+        // Konfetti indítás
+        function startConfetti() {
+            const confettis = document.querySelectorAll('.confetti');
+            confettis.forEach(confetti => {
+                confetti.classList.add('active');
+            });
+        }
+
+        // Ajándék kinyitása
+        document.getElementById('giftScene').addEventListener('click', function() {
+            const scene = this;
             const lightBurst = document.getElementById('lightBurst');
-            const message = document.getElementById('message');
+            const particles = document.getElementById('particles');
+            const message = document.getElementById('message3d');
 
-            // Ajándék eltűntetése
-            gift.style.transition = 'opacity 0.5s, transform 0.5s';
-            gift.style.opacity = '0';
-            gift.style.transform = 'scale(0)';
+            // Lebegés leállítása
+            scene.classList.remove('floating');
+            
+            // Kinyitás animáció
+            scene.classList.add('opening');
+            
+            // Fény robbanás
+            setTimeout(() => {
+                lightBurst.classList.add('active');
+                particles.classList.add('active');
+            }, 500);
 
-            // Fény effekt
-            lightBurst.classList.add('active');
+            // Konfetti esés indítása
+            setTimeout(() => {
+                startConfetti();
+            }, 800);
 
-            // Üzenet megjelenítése
+            // 3D szöveg megjelenése
             setTimeout(() => {
                 message.classList.add('show');
-            }, 100);
+            }, 800);
 
             // Egyszeri kattintás
-            gift.style.pointerEvents = 'none';
+            scene.style.pointerEvents = 'none';
         });
 
-        // Oldal betöltésekor hópelyhek létrehozása
+        // Inicializálás
         createSnowflakes();
+        createParticles();
+        createConfetti();
     </script>
 </body>
 </html>
