@@ -494,9 +494,11 @@
             position: relative;
             width: 350px;
             height: 90px;
-            background: #1a1a1a;
-            clip-path: polygon(
+            background: #6a6a6a;
+             clip-path: polygon(
+
              0% 0%, 75% 0%, 100% 50%, 75% 100%, 0% 100%
+
             );
             box-shadow: 
                 0 0 30px rgba(0,0,0,0.8);
@@ -506,63 +508,42 @@
         .sword-blade::before {
             content: '';
             position: absolute;
-            top: 2px;
-            left: 2px;
-            right: 2px;
-            bottom: 2px;
-            background: transparent;
-            border: 3px solid #6a6a6a;
-            clip-path: polygon(
-                0% 50%, 
-                2% 45%, 
-                3% 42%, 
-                88% 38%, 
-                94% 32%, 
-                98% 22%, 
-                100% 50%, 
-                98% 78%, 
-                94% 68%, 
-                88% 62%, 
-                3% 58%, 
-                2% 55%
+            top: 20%;
+            left: 0px;
+            right: 10%;
+            bottom: 20%;
+			  
+            background: #1a1a1a;
+			
+			
+          
+          clip-path: polygon(
+
+             0% 0%, 85% 0%, 100% 50%, 85% 100%, 0% 100%
+
             );
         }
 
-        /* Penge fény csík */
-        .sword-blade::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 5%;
-            width: 85%;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                rgba(150,150,150,0.4) 0%, 
-                rgba(120,120,120,0.3) 50%,
-                transparent 100%
-            );
-            transform: translateY(-50%);
-        }
+      
 
-        /* Keresztvas - egyszerűbb */
-        .sword-guard {
-            position: absolute;
-            left: -28px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 28px;
-            height: 90px;
-            background: linear-gradient(180deg, 
-                #8a8a8a 0%, 
-                #6a6a6a 50%, 
-                #8a8a8a 100%
-            );
-            border-radius: 4px;
-            box-shadow: 
-                0 4px 15px rgba(0,0,0,0.6),
-                inset 2px 0 4px rgba(255,255,255,0.2),
-                inset -2px 0 4px rgba(0,0,0,0.3);
-        }
+      .sword-guard {
+    position: absolute;
+    left: 0; /* ezt állítsd oda, ahol a markolat mellett lennie kell */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;          /* a sugár – a magasság fele */
+    height: 90px;         /* ez maradhat */
+    background: linear-gradient(180deg, 
+        #8a8a8a 0%, 
+        #6a6a6a 50%, 
+        #8a8a8a 100%
+    );
+    border-radius: 0 45px 45px 0;  /* JOBBRA néző félkör */
+    box-shadow: 
+        0 4px 15px rgba(0,0,0,0.6),
+        inset 2px 0 4px rgba(255,255,255,0.2),
+        inset -2px 0 4px rgba(0,0,0,0.3);
+}
 
         .sword-guard::before {
             content: '';
@@ -574,27 +555,12 @@
             background: rgba(255,255,255,0.2);
         }
 
-        /* Keresztvas kerek vég felül */
-        .sword-guard::after {
-            content: '';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 24px;
-            height: 16px;
-            background: radial-gradient(ellipse at 50% 60%, 
-                #8a8a8a 0%, 
-                #6a6a6a 100%
-            );
-            border-radius: 50% 50% 40% 40%;
-            box-shadow: 0 -2px 4px rgba(0,0,0,0.5);
-        }
+     
 
         /* Markolat - világosabb, fehér tekerés */
         .sword-handle {
             position: absolute;
-            left: -88px;
+            left: -60px;
             top: 50%;
             transform: translateY(-50%);
             width: 60px;
@@ -627,7 +593,7 @@
         /* Gomb - kerek, szürke */
         .sword-pommel {
             position: absolute;
-            left: -110px;
+            left: -80px;
             top: 50%;
             transform: translateY(-50%);
             width: 22px;
@@ -685,6 +651,104 @@
             }
         }
 
+        /* Szöveg buborék */
+        .speech-bubble {
+            position: absolute;
+            bottom: 30px;
+            right: -180px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: scale(0);
+            animation: bubbleAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 3.5s forwards;
+        }
+
+        @keyframes bubbleAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-right: 15px solid white;
+        }
+
+        .speech-text {
+            font-size: 1.8em;
+            font-weight: 900;
+            color: #1a1a1a;
+            font-style: italic;
+            letter-spacing: 0.02em;
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        /* Szöveg buborék */
+        .speech-bubble {
+            position: absolute;
+            bottom: 30px;
+            right: -180px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            opacity: 0;
+            transform: scale(0);
+            animation: bubbleAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 3.5s forwards;
+        }
+
+        @keyframes bubbleAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-right: 15px solid white;
+        }
+
+        .speech-text {
+            font-size: 1.8em;
+            font-weight: 900;
+            color: #1a1a1a;
+            font-style: italic;
+            letter-spacing: 0.02em;
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
+            margin: 0;
+            white-space: nowrap;
+        }
+
         /* Responsive */
         @media screen and (max-width: 768px) {
             .text-3d {
@@ -735,6 +799,26 @@
             .sword-glow {
                 width: 280px;
                 height: 80px;
+            }
+
+            .speech-bubble {
+                right: -140px;
+                bottom: 20px;
+                padding: 12px 20px;
+            }
+
+            .speech-text {
+                font-size: 1.4em;
+            }
+
+            .speech-bubble {
+                right: -140px;
+                bottom: 20px;
+                padding: 12px 20px;
+            }
+
+            .speech-text {
+                font-size: 1.4em;
             }
 
             .gift-box {
@@ -788,6 +872,11 @@
             <div class="sword-guard"></div>
             <div class="sword-handle"></div>
             <div class="sword-pommel"></div>
+            
+            <!-- Szöveg buborék -->
+            <div class="speech-bubble">
+                <p class="speech-text">Griffffiit!!!</p>
+            </div>
         </div>
     </div>
 
