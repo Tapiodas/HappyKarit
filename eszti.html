@@ -635,6 +635,53 @@
             border-radius: 50%;
         }
 
+        /* Kutya szövegbuborék */
+        .dog-speech {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background: white;
+            padding: 12px 18px;
+            border-radius: 18px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            opacity: 0;
+            animation: dogSpeechAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 3.8s forwards;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        @keyframes dogSpeechAppear {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) scale(0) rotate(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1) rotate(0deg);
+            }
+        }
+
+        .dog-speech::before {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 30px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 10px solid white;
+        }
+
+        .dog-speech-text {
+            font-size: 0.9em;
+            font-weight: 700;
+            color: #2d2d2d;
+            margin: 0;
+            letter-spacing: 0.02em;
+        }
+
         /* Responsive */
         @media screen and (max-width: 768px) {
             .text-3d {
@@ -670,6 +717,15 @@
                 left: -30px;
             }
 
+            .dog-speech {
+                bottom: 60px;
+                padding: 10px 15px;
+            }
+
+            .dog-speech-text {
+                font-size: 0.75em;
+            }
+
             .gift-box {
                 width: 120px;
                 height: 120px;
@@ -683,6 +739,10 @@
             .box-lid {
                 width: 130px;
                 height: 35px;
+            }
+
+            .text-shadow {
+                width: 200px;
             }
         }
     </style>
@@ -731,6 +791,11 @@
                 <div class="dachshund-leg back-left"></div>
                 <div class="dachshund-leg back-right"></div>
                 <div class="dachshund-tail"></div>
+            </div>
+            
+            <!-- Kutya szövegbuborék -->
+            <div class="dog-speech">
+                <p class="dog-speech-text">vau vau legjobb főnök vau vau</p>
             </div>
         </div>
     </div>
