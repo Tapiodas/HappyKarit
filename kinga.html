@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karácsonyi Meglepetés</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #A3D78A 0%, #7ab861 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            perspective: 1500px;
+        }
+
+        /* Hóesés */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: white;
+            font-size: 1.5em;
+            opacity: 0.6;
+            animation: fall linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        /* Ajándék konténer */
+        .gift-scene {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .gift-scene.floating {
+            animation: floatGift 3s ease-in-out infinite;
+        }
+
+        @keyframes floatGift {
+            0%, 100% {
+                transform: translateY(0) rotateY(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotateY(10deg);
+            }
+        }
+
+        /* Fake árnyék az ajándék alatt */
+        .gift-shadow {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 20px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(8px);
+            animation: shadowFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes shadowFloat {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateX(-50%) scale(0.8);
+                opacity: 0.2;
+            }
+        }
+
+        .gift-scene.opening .gift-shadow {
+            animation: shadowDisappear 1s ease-in-out 0.8s forwards;
+        }
+
+        @keyframes shadowDisappear {
+            0% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* Ajándék doboz */
+        .gift-box {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 25px;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .box-base {
+            position: absolute;
+            width: 150px;
+            height: 120px;
+            background: linear-gradient(145deg, #FF5555, #e63946);
+            border-radius: 4px;
+            bottom: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .box-base::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 100%;
+            background: #FF937E;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .box-base::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 20px;
+            background: #FF937E;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .box-lid {
+            position: absolute;
+            width: 160px;
+            height: 40px;
+            background: linear-gradient(145deg, #FF5555, #d63946);
+            border-radius: 4px;
+            top: -5px;
+            left: -5px;
+            transform-origin: bottom;
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .box-lid::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 100%;
+            background: #FF937E;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .bow {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            transition: all 0.8s ease;
+        }
+
+        .bow::before,
+        .bow::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 35px;
+            background: #FF937E;
+            border-radius: 50% 50% 0 50%;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .bow::before {
+            left: 0;
+            transform: rotate(-45deg);
+        }
+
+        .bow::after {
+            right: 0;
+            transform: rotate(45deg) scaleX(-1);
+        }
+
+        /* Animált állapotok */
+        .gift-scene.opening .box-lid {
+            transform: rotateX(-120deg);
+            opacity: 0;
+        }
+
+        .gift-scene.opening .bow {
+            transform: translateX(-50%) translateY(-100px) scale(0);
+            opacity: 0;
+        }
+
+        .gift-scene.opening .box-base {
+            animation: boxSlideAway 1s ease-in-out 0.8s forwards;
+        }
+
+        @keyframes boxSlideAway {
+            0% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-150vw) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        /* Fény robbanás */
+        .light-burst {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(193,229,159,0.4) 50%, transparent 70%);
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .light-burst.active {
+            animation: burstLight 1.2s ease-out forwards;
+        }
+
+        @keyframes burstLight {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 0;
+            }
+            50% {
+                width: 400px;
+                height: 400px;
+                opacity: 1;
+            }
+            100% {
+                width: 600px;
+                height: 600px;
+                opacity: 0;
+            }
+        }
+
+        /* Részecskék */
+        .particles {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            opacity: 0;
+        }
+
+        .particles.active .particle {
+            animation: particleExplode 1.5s ease-out forwards;
+        }
+
+        @keyframes particleExplode {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--tx), var(--ty)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Konfetti esés */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            opacity: 0;
+        }
+
+        .confetti.active {
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0.8;
+            }
+        }
+
+        .confetti.square {
+            border-radius: 0;
+        }
+
+        .confetti.circle {
+            border-radius: 50%;
+        }
+
+        .confetti.triangle {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 10px solid;
+        }
+
+        /* 3D Szöveg */
+        .message-3d {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(0) scale(0);
+            transform-style: preserve-3d;
+            opacity: 0;
+            z-index: 100;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .message-3d.show {
+            animation: float3DText 1s ease-out 1.5s forwards, floating3D 4s ease-in-out 2.5s infinite;
+        }
+
+        /* Fake árnyék a szöveg alatt */
+        .text-shadow {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 30px;
+            background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(15px);
+            animation: textShadowFloat 4s ease-in-out 2.5s infinite;
+        }
+
+        @keyframes textShadowFloat {
+            0%, 100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.4;
+            }
+            25%, 75% {
+                transform: translateX(-50%) scale(0.9);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translateX(-50%) scale(1.1);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes float3DText {
+            0% {
+                transform: translate(-50%, -50%) translateZ(-200px) scale(0);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) translateZ(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes floating3D {
+            0%, 100% {
+                transform: translate(-50%, -50%) translateZ(0) rotateX(0deg) rotateY(0deg);
+            }
+            25% {
+                transform: translate(-50%, -48%) translateZ(20px) rotateX(5deg) rotateY(-5deg);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateZ(0) rotateX(0deg) rotateY(5deg);
+            }
+            75% {
+                transform: translate(-50%, -52%) translateZ(20px) rotateX(-5deg) rotateY(0deg);
+            }
+        }
+
+        .text-3d {
+            font-size: 4em;
+            font-weight: 900;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            text-shadow: 
+                0 1px 0 #ccc,
+                0 2px 0 #c9c9c9,
+                0 3px 0 #bbb,
+                0 4px 0 #b9b9b9,
+                0 5px 0 #aaa,
+                0 6px 1px rgba(0,0,0,.1),
+                0 0 5px rgba(0,0,0,.1),
+                0 1px 3px rgba(0,0,0,.3),
+                0 3px 5px rgba(0,0,0,.2),
+                0 5px 10px rgba(0,0,0,.25),
+                0 10px 20px rgba(0,0,0,.2),
+                0 20px 30px rgba(0,0,0,.15);
+            margin: 0;
+            padding: 20px;
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                filter: drop-shadow(0 0 10px rgba(193,229,159,0.5));
+            }
+            50% {
+                filter: drop-shadow(0 0 20px rgba(193,229,159,0.8));
+            }
+        }
+
+        .subtitle-3d {
+            font-size: 1.5em;
+            color: #FF937E;
+            margin-top: 20px;
+            font-weight: 600;
+            text-shadow: 
+                0 1px 0 #999,
+                0 2px 0 #888,
+                0 3px 0 #777,
+                0 4px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Virágkert konténer */
+        .flower-garden {
+            position: absolute;
+            bottom: -140px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 450px;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            opacity: 0;
+            animation: gardenAppear 1s ease-out 3s forwards;
+        }
+
+        @keyframes gardenAppear {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Virág wrapper */
+        .flower {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: flowerSway 3s ease-in-out infinite;
+        }
+
+        .flower:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .flower:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .flower:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        .flower:nth-child(4) {
+            animation-delay: 0.9s;
+        }
+
+        .flower:nth-child(5) {
+            animation-delay: 1.2s;
+        }
+
+        @keyframes flowerSway {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            25% {
+                transform: rotate(-5deg);
+            }
+            75% {
+                transform: rotate(5deg);
+            }
+        }
+
+        /* Virág fej (szirmokkal) */
+        .flower-head {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            z-index: 2;
+        }
+
+        .flower.large .flower-head {
+            width: 50px;
+            height: 50px;
+        }
+
+        .flower.small .flower-head {
+            width: 32px;
+            height: 32px;
+        }
+
+        /* Virág szirmok */
+        .petal {
+            position: absolute;
+            width: 18px;
+            height: 24px;
+            border-radius: 50% 50% 50% 0;
+        }
+
+        .flower.large .petal {
+            width: 22px;
+            height: 30px;
+        }
+
+        .flower.small .petal {
+            width: 15px;
+            height: 20px;
+        }
+
+        /* Szirom pozíciók (8 szirom) */
+        .petal:nth-child(1) {
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, 0) rotate(0deg);
+            transform-origin: center bottom;
+        }
+
+        .petal:nth-child(2) {
+            top: 15%;
+            left: 75%;
+            transform: translate(-50%, 0) rotate(45deg);
+            transform-origin: center bottom;
+        }
+
+        .petal:nth-child(3) {
+            top: 50%;
+            left: 85%;
+            transform: translate(-50%, -50%) rotate(90deg);
+            transform-origin: center bottom;
+        }
+
+        .petal:nth-child(4) {
+            top: 85%;
+            left: 75%;
+            transform: translate(-50%, -100%) rotate(135deg);
+            transform-origin: center bottom;
+        }
+
+        .petal:nth-child(5) {
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%, 0) rotate(180deg);
+            transform-origin: center bottom;
+        }
+
+        .petal:nth-child(6) {
+            top: 85%;
+            left: 25%;
+            transform: translate(-50%, -100%) rotate(225deg);
+            transform-origin: center bottom;
+        }
+
+        .petal:nth-child(7) {
+            top: 50%;
+            left: 15%;
+            transform: translate(-50%, -50%) rotate(270deg);
+            transform-origin: center bottom;
+        }
+
+        .petal:nth-child(8) {
+            top: 15%;
+            left: 25%;
+            transform: translate(-50%, 0) rotate(315deg);
+            transform-origin: center bottom;
+        }
+
+        /* Virág színek */
+        .flower.orange .petal {
+            background: linear-gradient(135deg, #FF937E 0%, #f97316 100%);
+        }
+
+        .flower.pink .petal {
+            background: linear-gradient(135deg, #fda4af 0%, #fb7185 100%);
+        }
+
+        .flower.yellow .petal {
+            background: linear-gradient(135deg, #fde047 0%, #facc15 100%);
+        }
+
+        .flower.purple .petal {
+            background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+        }
+
+        .flower.blue .petal {
+            background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+        }
+
+        /* Virág közepe */
+        .flower-center {
+            position: absolute;
+            top: 83%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 100%);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 3;
+        }
+
+        .flower.large .flower-center {
+            width: 24px;
+            height: 24px;
+        }
+
+        .flower.small .flower-center {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Virág arc */
+        .flower-face {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+        }
+
+        .flower-eye {
+            position: absolute;
+            top: 6px;
+            width: 3px;
+            height: 3px;
+            background: #000;
+            border-radius: 50%;
+        }
+
+        .flower-eye.left {
+            left: 5px;
+        }
+
+        .flower-eye.right {
+            right: 5px;
+        }
+
+        .flower-smile {
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 4px;
+            border: 2px solid #000;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* Virág szár */
+        .flower-stem {
+            position: relative;
+            width: 5px;
+            height: 80px;
+            background: linear-gradient(180deg, #6b9654 0%, #4a7c59 100%);
+            border-radius: 3px;
+            margin-top: -2px;
+        }
+
+        .flower.tall .flower-stem {
+            height: 100px;
+        }
+
+        .flower.short .flower-stem {
+            height: 65px;
+        }
+
+        /* Levelek a száron */
+        .leaf {
+            position: absolute;
+            width: 25px;
+            height: 18px;
+            background: linear-gradient(135deg, #8bc34a 0%, #7cb342 100%);
+            border-radius: 50% 0 50% 50%;
+        }
+
+        .leaf.left {
+            left: -20px;
+            transform: rotate(-30deg);
+            transform-origin: right center;
+        }
+
+        .leaf.right {
+            right: -20px;
+            transform: rotate(30deg) scaleX(-1);
+            transform-origin: left center;
+        }
+
+        .leaf:nth-of-type(1) {
+            top: 20%;
+        }
+
+        .leaf:nth-of-type(2) {
+            top: 50%;
+        }
+
+        .leaf:nth-of-type(3) {
+            top: 75%;
+        }
+
+        /* Virág szövegbuborék */
+        .flower-speech {
+            position: absolute;
+            bottom: 160px;
+            left: 470px;
+            transform: scale(0);
+            background: white;
+            padding: 12px 20px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            opacity: 0;
+            animation: flowerSpeechAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 4s forwards;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        @keyframes flowerSpeechAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0) rotate(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .flower-speech::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 15px solid white;
+        }
+
+        .flower-speech-text {
+            font-size: 0.9em;
+            font-weight: 700;
+            color: #2d2d2d;
+            margin: 0;
+            letter-spacing: 0.02em;
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 768px) {
+            .text-3d {
+                font-size: 2.5em;
+            }
+
+            .subtitle-3d {
+                font-size: 1.2em;
+            }
+
+            .gift-scene {
+                width: 150px;
+                height: 150px;
+            }
+
+            .gift-shadow {
+                width: 110px;
+            }
+
+            .flower-garden {
+                width: 350px;
+                bottom: -120px;
+            }
+
+            .flower-stem {
+                height: 65px;
+            }
+
+            .flower.tall .flower-stem {
+                height: 80px;
+            }
+
+            .flower.short .flower-stem {
+                height: 50px;
+            }
+
+            .flower-head {
+                width: 32px;
+                height: 32px;
+            }
+
+            .flower.large .flower-head {
+                width: 40px;
+                height: 40px;
+            }
+
+            .flower.small .flower-head {
+                width: 26px;
+                height: 26px;
+            }
+
+            .flower-speech {
+                bottom: 140px;
+                left: 360px;
+                padding: 10px 16px;
+            }
+
+            .flower-speech-text {
+                font-size: 0.8em;
+            }
+
+            .gift-box {
+                width: 120px;
+                height: 120px;
+            }
+
+            .box-base {
+                width: 120px;
+                height: 95px;
+            }
+
+            .box-lid {
+                width: 130px;
+                height: 35px;
+            }
+
+            .text-shadow {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hópelyhek -->
+    <div id="snowflakes"></div>
+
+    <!-- Konfetti konténer -->
+    <div class="confetti-container" id="confettiContainer"></div>
+
+    <!-- Ajándék -->
+    <div class="gift-scene floating" id="giftScene">
+        <div class="gift-shadow"></div>
+        <div class="gift-box" id="giftBox">
+            <div class="box-lid">
+                <div class="bow"></div>
+            </div>
+            <div class="box-base"></div>
+        </div>
+        <div class="light-burst" id="lightBurst"></div>
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <!-- 3D Szöveg -->
+    <div class="message-3d" id="message3d">
+        <div class="text-shadow"></div>
+        <h1 class="text-3d">Boldog Karácsonyt!</h1>
+        <p class="subtitle-3d">🎄 Békés Ünnepeket 🎄</p>
+        
+        <!-- Virágkert -->
+        <div class="flower-garden">
+            <!-- Virág 1 - Narancs -->
+            <div class="flower orange large">
+                <div class="flower-head">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="flower-center">
+                        <div class="flower-face">
+                            <div class="flower-eye left"></div>
+                            <div class="flower-eye right"></div>
+                            <div class="flower-smile"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flower-stem">
+                    <div class="leaf left"></div>
+                    <div class="leaf right"></div>
+                    <div class="leaf left"></div>
+                </div>
+            </div>
+
+            <!-- Virág 2 - Rózsaszín -->
+            <div class="flower pink short">
+                <div class="flower-head">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="flower-center">
+                        <div class="flower-face">
+                            <div class="flower-eye left"></div>
+                            <div class="flower-eye right"></div>
+                            <div class="flower-smile"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flower-stem">
+                    <div class="leaf right"></div>
+                    <div class="leaf left"></div>
+                </div>
+            </div>
+
+            <!-- Virág 3 - Sárga (középső) -->
+            <div class="flower yellow tall large">
+                <div class="flower-head">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="flower-center">
+                        <div class="flower-face">
+                            <div class="flower-eye left"></div>
+                            <div class="flower-eye right"></div>
+                            <div class="flower-smile"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flower-stem">
+                    <div class="leaf left"></div>
+                    <div class="leaf right"></div>
+                    <div class="leaf left"></div>
+                </div>
+            </div>
+
+            <!-- Virág 4 - Lila -->
+            <div class="flower purple small">
+                <div class="flower-head">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="flower-center">
+                        <div class="flower-face">
+                            <div class="flower-eye left"></div>
+                            <div class="flower-eye right"></div>
+                            <div class="flower-smile"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flower-stem">
+                    <div class="leaf right"></div>
+                    <div class="leaf left"></div>
+                </div>
+            </div>
+
+            <!-- Virág 5 - Kék -->
+            <div class="flower blue tall">
+                <div class="flower-head">
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="petal"></div>
+                    <div class="flower-center">
+                        <div class="flower-face">
+                            <div class="flower-eye left"></div>
+                            <div class="flower-eye right"></div>
+                            <div class="flower-smile"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flower-stem">
+                    <div class="leaf left"></div>
+                    <div class="leaf right"></div>
+                    <div class="leaf left"></div>
+                </div>
+            </div>
+            
+            <!-- Virág szövegbuborék -->
+            <div class="flower-speech">
+                <p class="flower-speech-text">növény növény növény</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Hóesés
+        function createSnowflakes() {
+            const container = document.getElementById('snowflakes');
+            for (let i = 0; i < 50; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.textContent = '❄';
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                snowflake.style.fontSize = (Math.random() * 1 + 0.5) + 'em';
+                container.appendChild(snowflake);
+            }
+        }
+
+        // Részecskék létrehozása
+        function createParticles() {
+            const container = document.getElementById('particles');
+            const colors = ['#FF937E', '#FF5555', '#C1E59F', '#A3D78A'];
+            
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                const angle = (Math.PI * 2 * i) / 30;
+                const distance = 100 + Math.random() * 100;
+                const tx = Math.cos(angle) * distance + 'px';
+                const ty = Math.sin(angle) * distance + 'px';
+                
+                particle.style.setProperty('--tx', tx);
+                particle.style.setProperty('--ty', ty);
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // Konfetti esés
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            const colors = ['#FF5555', '#FF937E', '#C1E59F', '#A3D78A'];
+            const shapes = ['square', 'circle', 'triangle'];
+            
+            for (let i = 0; i < 150; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                // Véletlenszerű forma
+                const shape = shapes[Math.floor(Math.random() * shapes.length)];
+                confetti.classList.add(shape);
+                
+                // Szín
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                if (shape === 'triangle') {
+                    confetti.style.borderBottomColor = color;
+                } else {
+                    confetti.style.backgroundColor = color;
+                }
+                
+                // Pozíció és timing
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animationDelay = (Math.random() * 2) + 's';
+                
+                // Méret
+                const size = Math.random() * 8 + 6;
+                if (shape !== 'triangle') {
+                    confetti.style.width = size + 'px';
+                    confetti.style.height = size + 'px';
+                }
+                
+                container.appendChild(confetti);
+            }
+        }
+
+        // Konfetti indítás
+        function startConfetti() {
+            const confettis = document.querySelectorAll('.confetti');
+            confettis.forEach(confetti => {
+                confetti.classList.add('active');
+            });
+        }
+
+        // Ajándék kinyitása
+        document.getElementById('giftScene').addEventListener('click', function() {
+            const scene = this;
+            const lightBurst = document.getElementById('lightBurst');
+            const particles = document.getElementById('particles');
+            const message = document.getElementById('message3d');
+
+            // Lebegés leállítása
+            scene.classList.remove('floating');
+            
+            // Kinyitás animáció
+            scene.classList.add('opening');
+            
+            // Fény robbanás
+            setTimeout(() => {
+                lightBurst.classList.add('active');
+                particles.classList.add('active');
+            }, 500);
+
+            // Konfetti esés indítása
+            setTimeout(() => {
+                startConfetti();
+            }, 800);
+
+            // 3D szöveg megjelenése
+            setTimeout(() => {
+                message.classList.add('show');
+            }, 800);
+
+            // Egyszeri kattintás
+            scene.style.pointerEvents = 'none';
+        });
+
+        // Inicializálás
+        createSnowflakes();
+        createParticles();
+        createConfetti();
+    </script>
+</body>
+</html>
