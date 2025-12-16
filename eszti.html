@@ -48,10 +48,15 @@
             transform-style: preserve-3d;
             cursor: pointer;
             z-index: 10;
+            transition: transform 0.3s ease-out;
         }
 
         .gift-scene.floating {
             animation: floatGift 3s ease-in-out infinite;
+        }
+
+        .gift-scene.opening {
+            animation: none;
         }
 
         @keyframes floatGift {
@@ -447,18 +452,14 @@
         }
 
         .subtitle-3d {
-            font-size: 1.5em;
-            color: #FF937E;
-            margin-top: 20px;
-            font-weight: 600;
-            text-shadow: 
-                0 1px 0 #999,
-                0 2px 0 #888,
-                0 3px 0 #777,
-                0 4px 5px rgba(0,0,0,0.2);
+             font-size: 1.5em;
+    color: #ffffff;
+    margin-top: 20px;
+    font-weight: 600;
+    text-shadow: 0 1px 0 #999, 0 2px 0 #888, 0 3px 0 #777, 0 4px 5px rgba(0, 0, 0, 0.2);
         }
 
-        /* Dachshund (tacskó) */
+        /* Dachshund (tacskó) - FEKETE ARCCAL ÉS BARNA LÁBAKKAL */
         .dachshund {
             position: absolute;
             bottom: -120px;
@@ -495,36 +496,37 @@
             position: relative;
             width: 120px;
             height: 40px;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             border-radius: 20px;
         }
 
         .dachshund-head {
             position: absolute;
-            left: -35px;
-            top: -5px;
-            width: 45px;
-            height: 35px;
-            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
-            border-radius: 50% 40% 40% 30%;
-            transform: rotate(-10deg);
+            left: -30px;
+            top: 2px;
+            width: 40px;
+            height: 32px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            border-radius: 45% 40% 35% 30%;
+            transform: rotate(-5deg);
+            overflow: visible;
         }
 
         .dachshund-snout {
             position: absolute;
-            left: -10px;
-            top: 10px;
-            width: 20px;
-            height: 15px;
-            background: #8B4513;
-            border-radius: 50% 50% 30% 30%;
+            left: -8px;
+            top: 12px;
+            width: 18px;
+            height: 14px;
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            border-radius: 40% 40% 25% 25%;
         }
 
         .dachshund-nose {
             position: absolute;
-            left: -5px;
+            left: -4px;
             top: 5px;
-            width: 8px;
+            width: 7px;
             height: 6px;
             background: #000;
             border-radius: 50%;
@@ -532,45 +534,47 @@
 
         .dachshund-ear {
             position: absolute;
-            top: 0;
-            width: 18px;
-            height: 25px;
-            background: #654321;
+            top: 2px;
+            width: 16px;
+            height: 50px;
+            background: #1a1a1a;
             border-radius: 50% 50% 30% 30%;
         }
 
         .dachshund-ear.left {
-            left: 5px;
-            transform: rotate(-20deg);
+             left: -10px;
+    transform: rotate(20deg);
+    z-index: -1;
         }
 
         .dachshund-ear.right {
-            right: 0;
-            transform: rotate(10deg);
+            right: 2px;
+            transform: rotate(15deg);
+            z-index: 10;
         }
 
         .dachshund-eye {
             position: absolute;
-            top: 8px;
+            top: 10px;
             width: 5px;
             height: 5px;
-            background: #000;
+            background: #fffdfdc2;
             border-radius: 50%;
         }
 
         .dachshund-eye.left {
-            left: 8px;
+            left: 10px;
         }
 
         .dachshund-eye.right {
-            right: 15px;
+            right: 12px;
         }
 
         .dachshund-leg {
             position: absolute;
             width: 12px;
             height: 30px;
-            background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
+            background: linear-gradient(180deg, #654321 0%, #4a3319 100%);
             border-radius: 5px 5px 8px 8px;
             bottom: -28px;
         }
@@ -597,7 +601,7 @@
             top: 5px;
             width: 35px;
             height: 8px;
-            background: #8B4513;
+            background: #1a1a1a;
             border-radius: 50%;
             transform-origin: left;
             animation: tailWag 0.5s ease-in-out infinite;
@@ -613,14 +617,15 @@
         }
 
         .dachshund-collar {
-            position: absolute;
-            left: -10px;
-            top: 20px;
-            width: 30px;
-            height: 8px;
-            background: #FF5555;
-            border-radius: 5px;
-            z-index: 1;
+               position: absolute;
+    left: 25px;
+    top: 15px;
+    width: 28px;
+    height: 8px;
+    background: #000000;
+    border-radius: 5px;
+    z-index: 1;
+    transform: rotate(287deg);
         }
 
         .dachshund-collar::after {
@@ -712,9 +717,9 @@
             }
 
             .dachshund-head {
-                width: 38px;
-                height: 30px;
-                left: -30px;
+                width: 35px;
+                height: 28px;
+                left: -26px;
             }
 
             .dog-speech {
@@ -795,7 +800,7 @@
             
             <!-- Kutya szövegbuborék -->
             <div class="dog-speech">
-                <p class="dog-speech-text">vau vau legjobb főnök vau vau</p>
+                <p class="dog-speech-text">vau vau legjobb főnök ever és gazdi vau vau</p>
             </div>
         </div>
     </div>
